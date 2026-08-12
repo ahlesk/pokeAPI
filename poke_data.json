@@ -1,0 +1,26 @@
+{
+  "ditto": {
+    "url": "https://pokeapi.co/api/v2/pokemon/ditto",
+    "abilities": [
+      "limber",
+      "imposter"
+    ]
+  },
+  "battle_armor": {
+    "url": "https://pokeapi.co/api/v2/ability/battle-armor",
+    "short_effect_en": "Protects against critical hits.",
+    "pokemons": [
+      "cubone",
+      "marowak",
+      "kabuto",
+      "kabutops",
+      "anorith",
+      "armaldo",
+      "skorupi",
+      "drapion",
+      "type-null",
+      "perrserker",
+      "falinks"
+    ]
+  }
+}
