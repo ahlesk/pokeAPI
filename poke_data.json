@@ -1,9 +1,9 @@
 {
-  "ditto": {
-    "url": "https://pokeapi.co/api/v2/pokemon/ditto",
+  "pikachu": {
+    "url": "https://pokeapi.co/api/v2/pokemon/pikachu",
     "abilities": [
-      "limber",
-      "imposter"
+      "static",
+      "lightning-rod"
     ]
   },
   "battle_armor": {

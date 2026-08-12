@@ -1,29 +1,41 @@
-//Import das blibliotecas necessárias
+"""Import das bibliotecas necessárias"""
 import os
 import json
 import requests
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
-//Requisição HTTP para obter o JSON da URL fornecida
+# Requisição HTTP para obter o JSON da URL fornecida
 def fetch_json(url):
     resp = requests.get(url, timeout=10)
     resp.raise_for_status()
     return resp.json()
 
-
+# Requisição da URL de habilidade e pokemon
 def main():
-    ditto_url = "https://pokeapi.co/api/v2/pokemon/ditto"
+    import sys
+
+    # Allow pokemon name via CLI arg or interactive input
+    if len(sys.argv) > 1:
+        pokemon_name = sys.argv[1].strip().lower()
+    else:
+        pokemon_name = input("Nome do Pokémon (ex: ditto): ").strip().lower()
+
+    if not pokemon_name:
+        print("Nenhum nome de Pokémon fornecido. Encerrando.")
+        return
+
+    pokemon_url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_name}"
     ability_url = "https://pokeapi.co/api/v2/ability/battle-armor"
 
     try:
-        ditto = fetch_json(ditto_url)
+        pokemon = fetch_json(pokemon_url)
     except Exception as e:
-        print(f"Failed to fetch Ditto: {e}")
+        print(f"Failed to fetch {pokemon_name}: {e}")
         return
 
-    abilities = [a["ability"]["name"] for a in ditto.get("abilities", [])]
-    print("Abilities of Ditto:")
+    abilities = [a["ability"]["name"] for a in pokemon.get("abilities", [])]
+    print(f"Abilities of {pokemon_name.capitalize()}:")
     for a in abilities:
         print("-", a)
 
@@ -49,7 +61,7 @@ def main():
 
     # Save JSON file
     result = {
-        "ditto": {"url": ditto_url, "abilities": abilities},
+        pokemon_name: {"url": pokemon_url, "abilities": abilities},
         "battle_armor": {
             "url": ability_url,
             "short_effect_en": short_effect,
@@ -77,7 +89,7 @@ def main():
     col = db["abilities"]
 
     try:
-        col.update_one({"_id": "ditto"}, {"$set": {"abilities": abilities, "source": ditto_url}}, upsert=True)
+        col.update_one({"_id": pokemon_name}, {"$set": {"abilities": abilities, "source": pokemon_url}}, upsert=True)
         col.update_one(
             {"_id": "battle-armor"},
             {"$set": {"short_effect_en": short_effect, "pokemons": pokemons_with_ability, "source": ability_url}},
